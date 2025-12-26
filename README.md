@@ -1,5 +1,5 @@
 # Neural Vision 3D
-An interactive 3D visualization of a Neural Network built from scratch, capable of recognizing hand-drawn digits using the MNIST dataset.
+An interactive 3D visualization of a Neural Network built from scratch, capable of recognising hand-drawn digits using the MNIST dataset.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.11.9-green.svg)
