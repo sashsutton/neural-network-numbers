@@ -18,7 +18,7 @@ class NeuralNetwork:
         def forward_pass(self, input_pixels):
             """
             Runs the input through the network and returns ALL activations
-            so we can see them in 3D.
+            so we can visualise them in 3D.
             """
 
             # Input layer
