@@ -41,7 +41,7 @@ const ConnectionLines = ({ fromPos, toPos, activations }: any) => {
 };
 
 const NeuralScene = ({ networkData }: any) => {
-    // Input Layer (784 Neurons) - Unchanged layout
+    // Input Layer (784 Neurons)
     const inputPositions = useMemo(() => {
         const pts = [];
         const spacing = 0.22;
@@ -55,13 +55,13 @@ const NeuralScene = ({ networkData }: any) => {
         return pts;
     }, []);
 
-    // MODIFIED: Hidden Layer (Updated for 128 Neurons)
+    // Hidden Layer (128 Neurons)
     const hiddenPositions = useMemo(() => {
         const pts = [];
         const columns = 8;
         const rows = 16;
         const spacingX = 0.7;
-        const spacingY = 0.45; // Tighter vertical spacing for more neurons
+        const spacingY = 0.45;
 
         for (let i = 0; i < 128; i++) {
             const x = (i % columns) * spacingX - ((columns - 1) * spacingX) / 2;
@@ -71,16 +71,16 @@ const NeuralScene = ({ networkData }: any) => {
         return pts;
     }, []);
 
-    // Output Layer (10 Neurons) - Centered vertically
+    // Output Layer (11 Neurons for 0-9 and "Not a Number")
     const outputPositions = useMemo(() =>
-        Array.from({ length: 10 }, (_, i) => [7, i * 1.1 - 4.95, 0]), []
+        Array.from({ length: 11 }, (_, i) => [7, i * 1.0 - 5.0, 0]), []
     );
 
     return (
-        <div style={{ height: '100%', width: '100%', background: '#0f0f1a' }}>
+        <div style={{ height: '100%', width: '100%', background: '#1e1e2e' }}>
             <Canvas camera={{ position: [14, 6, 14], fov: 45 }}>
-                <color attach="background" args={['#0f0f1a']} />
-                <fog attach="fog" args={['#0f0f1a', 12, 35]} />
+                <color attach="background" args={['#1e1e2e']} />
+                <fog attach="fog" args={['#1e1e2e', 12, 35]} />
 
                 <ambientLight intensity={0.8} />
                 <pointLight position={[10, 10, 10]} intensity={2.5} color="#4facfe" />
@@ -95,7 +95,7 @@ const NeuralScene = ({ networkData }: any) => {
                     )
                 ))}
 
-                {/* Hidden Layer (128 Neurons) */}
+                {/* Hidden Layer */}
                 {hiddenPositions.map((pos: any, i: number) => (
                     <Neuron
                         key={`h-${i}`}
@@ -105,13 +105,13 @@ const NeuralScene = ({ networkData }: any) => {
                     />
                 ))}
 
-                {/* Output Layer */}
+                {/* Output Layer (0-9 are pink, NaN is red for distinction) */}
                 {outputPositions.map((pos: any, i: number) => (
                     <Neuron
                         key={`o-${i}`}
                         position={pos}
                         activation={networkData?.output_layer?.[i] || 0}
-                        color="#ff00ff"
+                        color={i === 10 ? "#ff4444" : "#ff00ff"}
                     />
                 ))}
 

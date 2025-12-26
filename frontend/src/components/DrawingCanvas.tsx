@@ -46,7 +46,6 @@ const DrawingCanvas = ({ onPrediction, onClear }: any) => {
         const canvas = canvasRef.current;
         if (!canvas) return;
 
-        // Create 28x28 version
         const tinyCanvas = document.createElement('canvas');
         tinyCanvas.width = 28;
         tinyCanvas.height = 28;
@@ -54,7 +53,7 @@ const DrawingCanvas = ({ onPrediction, onClear }: any) => {
         tinyCtx?.drawImage(canvas, 0, 0, 28, 28);
 
         const imageData = tinyCtx?.getImageData(0, 0, 28, 28);
-        const pixels = [];
+        const pixels: number[] = [];
         if (imageData) {
             for (let i = 0; i < imageData.data.length; i += 4) {
                 pixels.push(imageData.data[i] / 255.0);
@@ -64,7 +63,8 @@ const DrawingCanvas = ({ onPrediction, onClear }: any) => {
         try {
             const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
             const res = await axios.post(`${API_BASE_URL}/predict`, { pixels });
-            onPrediction(res.data);
+
+            onPrediction(res.data, pixels);
         } catch (err) {
             console.error("Prediction failed", err);
         }

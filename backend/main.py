@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 from brain import NeuralNetwork
+import numpy as np
 
 app = FastAPI()
 
@@ -30,6 +31,44 @@ async def predict(data: DigitData):
     result = brain.forward_pass(data.pixels)
     return result
 
+
+@app.post("/feedback")
+async def feedback(data: dict):
+    pixels = np.array(data['pixels']).reshape(784, 1)
+    correct_label = int(data['correct_label'])
+
+
+    brain.load_weights("weights.npz")
+
+
+    target = np.zeros((11, 1))
+    target[correct_label] = 1
+
+
+    z1 = np.dot(brain.W1, pixels) + brain.b1
+    a1 = np.maximum(0, z1)  # Using ReLU as planned
+    z2 = np.dot(brain.W2, a1) + brain.b2
+    a2 = brain.softmax(z2)
+
+
+    dz2 = a2 - target
+    dW2 = np.dot(dz2, a1.T) + (0.001 * brain.W2)
+    db2 = dz2
+    dz1 = np.dot(brain.W2.T, dz2) * (z1 > 0)
+    dW1 = np.dot(dz1, pixels.T) + (0.001 * brain.W1)
+    db1 = dz1
+
+
+    lr = 0.02
+    brain.W2 -= lr * dW2
+    brain.b2 -= lr * db2
+    brain.W1 -= lr * dW1
+    brain.b1 -= lr * db1
+
+
+    np.savez("weights.npz", W1=brain.W1, b1=brain.b1, W2=brain.W2, b2=brain.b2)
+
+    return {"status": "Brain updated!"}
 if __name__ == "__main__":
     import uvicorn
     # uvicorn.run(app, host="0.0.0.0", port=8000)
