@@ -1,5 +1,5 @@
 # Neural Vision 3D
-An interactive 3D visualization of a Neural Network built from scratch, capable of recognizing hand-drawn digits using the MNIST dataset.
+An interactive 3D visualisation of a Neural Network built from scratch, capable of recognising hand-drawn digits using the MNIST dataset.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.11.9-green.svg)
@@ -16,7 +16,7 @@ Neural Vision 3D is an educational tool designed to demystify how artificial neu
 ### Key Features
 - **Neural Network from Scratch**: Built using NumPy (no high-level libraries like PyTorch/Keras for the inference logic).
 - **3D Interactive Scene**: Rendered with Three.js (React Three Fiber), allowing users to rotate, zoom, and inspect neural activations.
-- **Confidence Meter**: Visual feedback showing the probability of each prediction.
+- **Confidence Metre**: Visual feedback showing the probability of each prediction.
 - **Responsive Dashboard**: A modern "Dark Lab" UI built with React and Vite.
 
 ### Architecture
