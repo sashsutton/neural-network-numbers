@@ -21,6 +21,10 @@ brain.load_weights("weights.npz")
 class DigitData(BaseModel):
     pixels: List[float]
 
+@app.get("/")
+def read_root():
+    return {"Status": "Neural Network API is Live"}
+
 @app.post("/predict")
 async def predict(data: DigitData):
     result = brain.forward_pass(data.pixels)

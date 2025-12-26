@@ -18,7 +18,6 @@ const ConnectionLines = ({ fromPos, toPos, activations }: any) => {
     const lines = useMemo(() => {
         const list: any[] = [];
         fromPos.forEach((start: any, i: number) => {
-            // Only draw connections for active neurons to boost performance
             if (activations[i] > 0.05) {
                 toPos.forEach((end: any, j: number) => {
                     list.push(
@@ -41,13 +40,19 @@ const ConnectionLines = ({ fromPos, toPos, activations }: any) => {
 };
 
 const NeuralScene = ({ networkData }: any) => {
-    // 1. Define Layer Positions
     const inputPositions = useMemo(() => {
         const pts = [];
+        const spacing = 0.2;
+        const offset = (28 * spacing) / 2;
+
         for (let i = 0; i < 784; i++) {
-            const x = (i % 28) * 0.2 - 2.8;
-            const y = Math.floor(i / 28) * 0.2 - 2.8;
-            pts.push([-6, y, x]); // Located at x = -6
+            const x = (i % 28) * spacing - offset;
+            const y_index = Math.floor(i / 28);
+
+            // FIX: Subtract y_index from 27 to flip the Y-axis
+            const y = (27 - y_index) * spacing - offset;
+
+            pts.push([-6, y, x]); // Keeping it at the front layer
         }
         return pts;
     }, []);

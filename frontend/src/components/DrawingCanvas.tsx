@@ -82,8 +82,12 @@ const DrawingCanvas = ({ onPrediction, onClear }: any) => {
                 style={{ border: '2px solid #4facfe', borderRadius: '8px' }}
             />
             <div className="button-group">
-                <button onClick={handlePredict} className="predict-btn">Run Prediction</button>
-                <button onClick={clearCanvas} className="clear-btn">Clear Pad</button>
+                <button onClick={handlePredict} className="predict-btn">
+                    Run Prediction
+                </button>
+                <button onClick={clearCanvas} className="clear-btn">
+                    Clear Pad
+                </button>
             </div>
         </div>
     );
