@@ -1,5 +1,5 @@
 # Neural Vision 3D
-An interactive 3D visualization of a Neural Network built from scratch, capable of recognizing hand-drawn digits using the MNIST dataset.
+An interactive 3D visualisation of a Neural Network built from scratch, capable of recognising hand-drawn digits using the MNIST dataset.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.11.9-green.svg)
@@ -16,7 +16,7 @@ Neural Vision 3D is an educational tool designed to demystify how artificial neu
 ### Key Features
 - **Neural Network from Scratch**: Built using NumPy (no high-level libraries like PyTorch/Keras for the inference logic).
 - **3D Interactive Scene**: Rendered with Three.js (React Three Fiber), allowing users to rotate, zoom, and inspect neural activations.
-- **Confidence Meter**: Visual feedback showing the probability of each prediction.
+- **Confidence Metre**: Visual feedback showing the probability of each prediction.
 - **Responsive Dashboard**: A modern "Dark Lab" UI built with React and Vite.
 
 ### Architecture
@@ -104,50 +104,11 @@ To run the API in a production-ready state, use **Uvicorn**. This is the same co
     uvicorn main:app --host 0.0.0.0 --port 8000
     ```
 ### 2. Frontend Setup (The Dashboard)
-The frontend is a React application powered by Vite, using Three.js (React Three Fiber) for the neural visualization.
+The frontend is a React application powered by Vite, using Three.js (React Three Fiber) for the neural visualisation.
 
 **Prerequisites:**
 * Node.js (v18 or higher)
 * npm (Node Package Manager)
 
 **Installation Steps:**
-1. **Navigate to the directory:**
-   ```bash
-   cd frontend
-   ```
-2. **Install dependencies:**
-    ```bash
-   npm install
-   ```
-3. **Configure Environment Variables: Create a file named .env in the root of the frontend folder to point the dashboard to your API:**
-    ```text
-   VITE_API_URL=[http://127.0.0.1:8000](http://127.0.0.1:8000)
-   ```
-4. **Start the Development Server:**
-    ```bash
-   npm run dev
-   ```
-5. **Build for Production: When you are ready to deploy to Vercel or Netlify, run:**
-    ```bash
-   npm run build
-   ```
----
-## 🎮 How to Use
-1. **Ensure both the Backend and Frontend are running.**
-
-2. **Open your browser to the frontend URL.**
-
-3. **Draw: Use your mouse to draw a single digit (0-9) on the black canvas.**
-
-4. **Predict: Click the "Run Prediction" button.**
-
-5. **Visualize:**
-
-   - Watch the Input Layer (left) light up based on your pixels.
-
-   - Observe the Hidden Layer (middle) process the features.
-
-   - See the Output Layer (right) identify the digit with a neon highlight.
-
-   - Use your mouse to Rotate and Zoom the 3D scene to inspect individual neurons.
 
