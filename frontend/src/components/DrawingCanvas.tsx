@@ -1,14 +1,30 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 
-const DrawingCanvas = ({ onPrediction }: { onPrediction: (data: any) => void }) => {
+const DrawingCanvas = ({ onPrediction, onClear }: any) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isDrawing, setIsDrawing] = useState(false);
 
-    const startDrawing = (e: React.MouseEvent) => {
+    useEffect(() => {
+        clearCanvas(); // Initial clear to set background to black
+    }, []);
+
+    const clearCanvas = () => {
+        const canvas = canvasRef.current;
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+                ctx.fillStyle = 'black';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                onClear(); // Reset data in parent
+            }
+        }
+    };
+
+    const startDrawing = (e: any) => {
         const ctx = canvasRef.current?.getContext('2d');
         if (ctx) {
-            ctx.lineWidth = 20;
+            ctx.lineWidth = 18;
             ctx.lineCap = 'round';
             ctx.strokeStyle = 'white';
             ctx.beginPath();
@@ -17,7 +33,7 @@ const DrawingCanvas = ({ onPrediction }: { onPrediction: (data: any) => void }) 
         }
     };
 
-    const draw = (e: React.MouseEvent) => {
+    const draw = (e: any) => {
         if (!isDrawing) return;
         const ctx = canvasRef.current?.getContext('2d');
         if (ctx) {
@@ -26,12 +42,11 @@ const DrawingCanvas = ({ onPrediction }: { onPrediction: (data: any) => void }) 
         }
     };
 
-    const processImage = async () => {
-        setIsDrawing(false);
+    const handlePredict = async () => {
         const canvas = canvasRef.current;
         if (!canvas) return;
 
-        // Create a 28x28 helper canvas to downsample the image
+        // Create 28x28 version
         const tinyCanvas = document.createElement('canvas');
         tinyCanvas.width = 28;
         tinyCanvas.height = 28;
@@ -39,42 +54,37 @@ const DrawingCanvas = ({ onPrediction }: { onPrediction: (data: any) => void }) 
         tinyCtx?.drawImage(canvas, 0, 0, 28, 28);
 
         const imageData = tinyCtx?.getImageData(0, 0, 28, 28);
-        if (!imageData) return;
-
-        const pixels: number[] = [];
-        for (let i = 0; i < imageData.data.length; i += 4) {
-            pixels.push(imageData.data[i] / 255.0); // Normalize pixels to [0, 1]
+        const pixels = [];
+        if (imageData) {
+            for (let i = 0; i < imageData.data.length; i += 4) {
+                pixels.push(imageData.data[i] / 255.0);
+            }
         }
 
         try {
-            const response = await axios.post('http://localhost:8000/predict', { pixels });
-            onPrediction(response.data);
-        } catch (error) {
-            console.error("Error communicating with backend:", error);
-        }
-    };
-
-    const clear = () => {
-        const ctx = canvasRef.current?.getContext('2d');
-        if (ctx && canvasRef.current) {
-            ctx.fillStyle = 'black';
-            ctx.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+            const res = await axios.post('http://localhost:8000/predict', { pixels });
+            onPrediction(res.data);
+        } catch (err) {
+            console.error("Prediction failed", err);
         }
     };
 
     return (
-        <div style={{ padding: '20px' }}>
+        <div className="canvas-container">
             <canvas
                 ref={canvasRef}
                 width={280}
                 height={280}
-                style={{ background: 'black', border: '2px solid white', cursor: 'crosshair' }}
                 onMouseDown={startDrawing}
                 onMouseMove={draw}
-                onMouseUp={processImage}
+                onMouseUp={() => setIsDrawing(false)}
+                onMouseLeave={() => setIsDrawing(false)}
+                style={{ border: '2px solid #4facfe', borderRadius: '8px' }}
             />
-            <br />
-            <button onClick={clear}>Clear</button>
+            <div className="button-group">
+                <button onClick={handlePredict} className="predict-btn">Run Prediction</button>
+                <button onClick={clearCanvas} className="clear-btn">Clear Pad</button>
+            </div>
         </div>
     );
 };

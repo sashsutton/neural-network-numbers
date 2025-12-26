@@ -5,7 +5,13 @@ from typing import List
 from brain import NeuralNetwork  # <--- Import your class!
 
 app = FastAPI()
-app.add_middleware(CORSMiddleware, allow_origins=["*"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],             # Allow all origins (Vite usually runs on 5173)
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"], # Allow all methods (GET, POST, OPTIONS)
+    allow_headers=["*"],
+)
 
 # Initialise and load the brain once when the server starts
 brain = NeuralNetwork()
