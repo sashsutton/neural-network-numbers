@@ -62,7 +62,8 @@ const DrawingCanvas = ({ onPrediction, onClear }: any) => {
         }
 
         try {
-            const res = await axios.post('http://localhost:8000/predict', { pixels });
+            const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+            const res = await axios.post(`${API_BASE_URL}/predict`, { pixels });
             onPrediction(res.data);
         } catch (err) {
             console.error("Prediction failed", err);
