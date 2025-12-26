@@ -52,9 +52,15 @@ const NeuralScene = ({ networkData }: any) => {
         return pts;
     }, []);
 
-    const hiddenPositions = useMemo(() =>
-        Array.from({ length: 16 }, (_, i) => [0, i * 0.6 - 4.5, 0]), []
-    );
+    const hiddenPositions = useMemo(() => {
+        const pts = [];
+        for (let i = 0; i < 64; i++) {
+            const x = (i % 8) * 0.6 - 2.1;
+            const y = Math.floor(i / 8) * 0.6 - 2.1;
+            pts.push([0, y, x]);
+        }
+        return pts;
+    }, []);
 
     const outputPositions = useMemo(() =>
         Array.from({ length: 10 }, (_, i) => [6, i * 1.0 - 4.5, 0]), []
