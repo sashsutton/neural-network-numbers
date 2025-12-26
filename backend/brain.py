@@ -24,18 +24,22 @@ class NeuralNetwork:
 
         a0 = np.array(input_pixels).reshape(784, 1)
 
-        # Layer 1 with ReLU activation
+        # Layer 1 (128 neurons)
         z1 = np.dot(self.W1, a0) + self.b1
         a1 = self.relu(z1)
 
-        # Layer 2 (Output)
+        # Layer 2 (Now 11 output neurons)
         z2 = np.dot(self.W2, a1) + self.b2
         a2 = self.softmax(z2)
+
+        prediction_idx = int(np.argmax(a2))
+
+        prediction_label = str(prediction_idx) if prediction_idx < 10 else "Not a Number"
 
         return {
             "input_layer": a0.flatten().tolist(),
             "hidden_layer": a1.flatten().tolist(),
             "output_layer": a2.flatten().tolist(),
-            "prediction": int(np.argmax(a2)),
+           "prediction": prediction_label,
             "confidence": float(np.max(a2))
         }
