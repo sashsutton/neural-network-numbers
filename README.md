@@ -3,7 +3,7 @@ An interactive 3D visualisation of a Neural Network built from scratch, capable 
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.11.9-green.svg)
-![React](https://img.shields.io/badge/react-18-blue.svg)
+![React](https://img.shields.io/badge/react-19-blue.svg)
 
 ---
 ### 🌐 Live Demo
@@ -16,13 +16,15 @@ Neural Vision 3D is an educational tool designed to demystify how artificial neu
 ### Key Features
 - **Neural Network from Scratch**: Built using NumPy (no high-level libraries like PyTorch/Keras for the inference logic).
 - **3D Interactive Scene**: Rendered with Three.js (React Three Fiber), allowing users to rotate, zoom, and inspect neural activations.
+- **Feedback Loop**: Users can correct the network's predictions, allowing it to learn from mistakes in real-time.
+- **Stylized Notifications**: Modern, glassmorphism-styled notifications for user feedback.
 - **Confidence Metre**: Visual feedback showing the probability of each prediction.
 - **Responsive Dashboard**: A modern "Dark Lab" UI built with React and Vite.
 
 ### Architecture
 - **Input Layer**: 784 Neurons (28x28 pixels)
-- **Hidden Layer**: 64 Neurons (Sigmoid activation)
-- **Output Layer**: 10 Neurons (Softmax activation)
+- **Hidden Layer**: 128 Neurons (ReLU activation)
+- **Output Layer**: 11 Neurons (10 Digits + "Not a Number")
 
 ---
 
@@ -30,16 +32,16 @@ Neural Vision 3D is an educational tool designed to demystify how artificial neu
 
 ### Backend
 - **Python 3.11.9**: Core logic.
-- **FastAPI**: High-performance API for handling predictions.
-- **NumPy**: Matrix mathematics for the forward pass.
+- **FastAPI**: High-performance API for handling predictions and feedback.
+- **NumPy**: Matrix mathematics for the forward and backward pass.
 - **TensorFlow**: (Training only) Used to fetch the MNIST dataset.
 
 ### Frontend
 - **React + TypeScript**: Application framework.
-- **Three.js / React Three Fiber**: 3D rendering engine.
-- **React Three Drei**: Helpers for 3D lines and shapes.
+- **Three.js / React Three Fiber**: 3D rendering engine with optimized rendering.
+- **React Three Drei**: Helpers for 3D lines, shapes, and environment.
 - **Axios**: API communication.
-- **CSS3**: Custom "Neon-Glassmorphism" styling.
+- **CSS3**: Custom "Neon-Glassmorphism" styling with animations.
 
 ---
 
@@ -150,4 +152,6 @@ The frontend is a React application powered by Vite, using Three.js (React Three
    - See the Output Layer (right) identify the digit with a neon highlight.
 
    - Use your mouse to Rotate and Zoom the 3D scene to inspect individual neurons.
+
+6. **Correct: If the prediction is wrong, click "Wrong? Correct it" to teach the network the right answer!**
 
