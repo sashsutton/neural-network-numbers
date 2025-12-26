@@ -111,4 +111,43 @@ The frontend is a React application powered by Vite, using Three.js (React Three
 * npm (Node Package Manager)
 
 **Installation Steps:**
+1. **Navigate to the directory:**
+   ```bash
+   cd frontend
+   ```
+2. **Install dependencies:**
+    ```bash
+   npm install
+   ```
+3. **Configure Environment Variables: Create a file named .env in the root of the frontend folder to point the dashboard to your API:**
+    ```text
+   VITE_API_URL=[http://127.0.0.1:8000](http://127.0.0.1:8000)
+   ```
+4. **Start the Development Server:**
+    ```bash
+   npm run dev
+   ```
+5. **Build for Production: When you are ready to deploy to Vercel or Netlify, run:**
+    ```bash
+   npm run build
+   ```
+---
+## 🎮 How to Use
+1. **Ensure both the Backend and Frontend are running.**
+
+2. **Open your browser to the frontend URL.**
+
+3. **Draw: Use your mouse to draw a single digit (0-9) on the black canvas.**
+
+4. **Predict: Click the "Run Prediction" button.**
+
+5. **Visualise:**
+
+   - Watch the Input Layer (left) light up based on your pixels.
+
+   - Observe the Hidden Layer (middle) process the features.
+
+   - See the Output Layer (right) identify the digit with a neon highlight.
+
+   - Use your mouse to Rotate and Zoom the 3D scene to inspect individual neurons.
 
