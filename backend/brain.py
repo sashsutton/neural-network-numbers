@@ -36,7 +36,7 @@ class NeuralNetwork:
                 "input_layer": A0.flatten().tolist(), # To light up 3D pixels
                 "hidden_layer": A1.flatten().tolist(), # To light up 3D hidden nodes
                 "output_layer": A2.flatten().tolist(), # To show the final prediction
-                "prediction": int.(np.argmax(A2))
+                "prediction": int(np.argmax(A2))
             }
 
 
