@@ -1,44 +1,38 @@
 import numpy as np
 
+
 class NeuralNetwork:
     def __init__(self):
-        # 784 -> 16 -> 10 architecture
-        self.w1 = np.random.randn(16, 784) * 0.01 #hidden weights
-        self.b1 = np.zeros((16,1)) #hidden bias
-        self.w2 = np.random.randn(10, 16) * 0.01 #output weights
-        self.b2 = np.zeros((10,1)) #output bias
+        # Initialise placeholders
+        self.W1, self.b1 = None, None
+        self.W2, self.b2 = None, None
 
-        def sigmoid(self, z):
-            return 1 / (1 + np.exp(-z))
+    def load_weights(self, path):
+        data = np.load(path)
+        self.W1, self.b1 = data["W1"], data["b1"]
+        self.W2, self.b2 = data["W2"], data["b2"]
 
-        def softmax(self, z):
-            exp_z = np.exp(z - np.max(z))
-            return exp_z / exp_z.sum(axis=0)
+    def sigmoid(self, z):
+        return 1 / (1 + np.exp(-z))
 
-        def forward_pass(self, input_pixels):
-            """
-            Runs the input through the network and returns ALL activations
-            so we can visualise them in 3D.
-            """
+    def softmax(self, z):
+        e = np.exp(z - np.max(z))
+        return e / e.sum(axis=0)
 
-            # Input layer
-            A0 = np.array(input_pixels).reshape(1, 784)
+    def forward_pass(self, input_pixels):
+        a0 = np.array(input_pixels).reshape(784, 1)
 
-            # Layer 1: hidden
-            Z1 = np.dot(self.w1, A0) + self.b1
-            A1 = self.sigmoid(Z1)
+        # Layer 1
+        z1 = np.dot(self.W1, a0) + self.b1
+        a1 = self.sigmoid(z1)
 
-            # Layer 2: Output
-            Z2 = np.dot(self.w2, A1) + self.b2
-            A2 = self.softmax(Z2)
+        # Layer 2
+        z2 = np.dot(self.W2, a1) + self.b2
+        a2 = self.softmax(z2)
 
-            return{
-                "input_layer": A0.flatten().tolist(), # To light up 3D pixels
-                "hidden_layer": A1.flatten().tolist(), # To light up 3D hidden nodes
-                "output_layer": A2.flatten().tolist(), # To show the final prediction
-                "prediction": int(np.argmax(A2))
-            }
-
-
-
-
+        return {
+            "input_layer": a0.flatten().tolist(),
+            "hidden_layer": a1.flatten().tolist(),
+            "output_layer": a2.flatten().tolist(),
+            "prediction": int(np.argmax(a2))
+        }
