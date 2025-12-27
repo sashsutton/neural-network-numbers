@@ -6,7 +6,7 @@ const DrawingCanvas = ({ onPrediction, onClear }: any) => {
     const [isDrawing, setIsDrawing] = useState(false);
 
     useEffect(() => {
-        clearCanvas(); // Initial clear to set background to black
+        clearCanvas();
     }, []);
 
     const clearCanvas = () => {
@@ -16,7 +16,7 @@ const DrawingCanvas = ({ onPrediction, onClear }: any) => {
             if (ctx) {
                 ctx.fillStyle = 'black';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
-                onClear(); // Reset data in parent
+                onClear();
             }
         }
     };
@@ -46,24 +46,59 @@ const DrawingCanvas = ({ onPrediction, onClear }: any) => {
         const canvas = canvasRef.current;
         if (!canvas) return;
 
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        const fullImageData = ctx.getImageData(0, 0, 280, 280);
+        let minX = 280, minY = 280, maxX = 0, maxY = 0;
+        let foundPixels = false;
+
+        for (let y = 0; y < 280; y++) {
+            for (let x = 0; x < 280; x++) {
+                const i = (y * 280 + x) * 4;
+                if (fullImageData.data[i] > 50) {
+                    minX = Math.min(minX, x);
+                    minY = Math.min(minY, y);
+                    maxX = Math.max(maxX, x);
+                    maxY = Math.max(maxY, y);
+                    foundPixels = true;
+                }
+            }
+        }
+
+        if (!foundPixels) return;
+
         const tinyCanvas = document.createElement('canvas');
         tinyCanvas.width = 28;
         tinyCanvas.height = 28;
         const tinyCtx = tinyCanvas.getContext('2d');
-        tinyCtx?.drawImage(canvas, 0, 0, 28, 28);
+        if (!tinyCtx) return;
 
-        const imageData = tinyCtx?.getImageData(0, 0, 28, 28);
+        tinyCtx.fillStyle = 'black';
+        tinyCtx.fillRect(0, 0, 28, 28);
+
+        const width = maxX - minX;
+        const height = maxY - minY;
+        const scale = 20 / Math.max(width, height);
+        const scaledW = width * scale;
+        const scaledH = height * scale;
+
+        tinyCtx.drawImage(
+            canvas,
+            minX, minY, width, height,
+            14 - scaledW / 2, 14 - scaledH / 2,
+            scaledW, scaledH
+        );
+
+        const imageData = tinyCtx.getImageData(0, 0, 28, 28);
         const pixels: number[] = [];
-        if (imageData) {
-            for (let i = 0; i < imageData.data.length; i += 4) {
-                pixels.push(imageData.data[i] / 255.0);
-            }
+        for (let i = 0; i < imageData.data.length; i += 4) {
+            pixels.push(imageData.data[i] / 255.0);
         }
 
         try {
-            const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+            const API_BASE_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
             const res = await axios.post(`${API_BASE_URL}/predict`, { pixels });
-
             onPrediction(res.data, pixels);
         } catch (err) {
             console.error("Prediction failed", err);
