@@ -32,13 +32,10 @@ async def predict(data: DigitData):
     return result
 
 
-# backend/main.py
-
 @app.post("/feedback")
 async def feedback(data: dict):
     pixels = np.array(data['pixels']).reshape(784, 1)
     correct_label = int(data['correct_label'])
-
     brain.load_weights("weights.npz")
 
     target = np.zeros((11, 1))
@@ -48,24 +45,26 @@ async def feedback(data: dict):
     z1 = np.dot(brain.W1, pixels) + brain.b1
     a1 = np.maximum(0, z1)
     z2 = np.dot(brain.W2, a1) + brain.b2
-    a2 = brain.softmax(z2)
+    a2 = np.maximum(0, z2)
+    z3 = np.dot(brain.W3, a2) + brain.b3
+    a3 = brain.softmax(z3)
 
     # Backprop
-    dz2 = a2 - target
-    dW2 = np.dot(dz2, a1.T) + (0.001 * brain.W2)
-    db2 = dz2
+    dz3 = a3 - target
+    dW3 = np.dot(dz3, a2.T)
+    dz2 = np.dot(brain.W3.T, dz3) * (z2 > 0)
+    dW2 = np.dot(dz2, a1.T)
     dz1 = np.dot(brain.W2.T, dz2) * (z1 > 0)
-    dW1 = np.dot(dz1, pixels.T) + (0.001 * brain.W1)
-    db1 = dz1
+    dW1 = np.dot(dz1, pixels.T)
 
-    lr = 0.001
+    lr = 0.001  # Stable learning rate
+    brain.W3 -= lr * dW3
     brain.W2 -= lr * dW2
-    brain.b2 -= lr * db2
     brain.W1 -= lr * dW1
-    brain.b1 -= lr * db1
 
-    np.savez("weights.npz", W1=brain.W1, b1=brain.b1, W2=brain.W2, b2=brain.b2)
-    return {"status": "Brain updated with stability!"}
+    np.savez("weights.npz", W1=brain.W1, b1=brain.b1, W2=brain.W2, b2=brain.b2, W3=brain.W3, b3=brain.b3)
+    return {"status": "Deep brain updated!"}
+
 
 
 if __name__ == "__main__":
