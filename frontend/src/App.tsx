@@ -8,6 +8,7 @@ interface NetworkResponse {
     input_layer: number[];
     hidden_layer1: number[];
     hidden_layer2: number[];
+    hidden_layer3: number[];
     output_layer: number[];
     prediction: string | number;
     confidence: number;
@@ -28,7 +29,7 @@ function App() {
         if (!lastPixels) return;
 
         try {
-            const API_BASE_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
+            const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
             await axios.post(`${API_BASE_URL}/feedback`, {
                 pixels: lastPixels,
                 correct_label: correctLabel
