@@ -1,5 +1,5 @@
 # Neural Vision 3D
-An interactive 3D visualisation of a Neural Network built from scratch, capable of recognising hand-drawn digits using the MNIST dataset.
+An interactive 3D visualization of a Neural Network built from scratch, capable of recognizing hand-drawn digits using the MNIST dataset.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.11.9-green.svg)
@@ -11,20 +11,22 @@ An interactive 3D visualisation of a Neural Network built from scratch, capable 
 ---
 
 ## Overview
-Neural Vision 3D is an educational tool designed to demystify how artificial neurons "think." Users can draw numbers on a digital pad, and in real-time, see how the signals propagate through 784 input neurons, 64 hidden neurons, and 10 output neurons in a fully interactive 3D environment.
+Neural Vision 3D is an educational tool designed to demystify how artificial neurons "think." Users can draw numbers on a digital pad, and in real-time, see how the signals propagate through a deep 4-layer architecture in a fully interactive 3D environment.
 
 ### Key Features
 - **Neural Network from Scratch**: Built using NumPy (no high-level libraries like PyTorch/Keras for the inference logic).
 - **3D Interactive Scene**: Rendered with Three.js (React Three Fiber), allowing users to rotate, zoom, and inspect neural activations.
 - **Feedback Loop**: Users can correct the network's predictions, allowing it to learn from mistakes in real-time.
-- **Stylized Notifications**: Modern, glassmorphism-styled notifications for user feedback.
-- **Confidence Metre**: Visual feedback showing the probability of each prediction.
+- **Confidence Meter**: Visual feedback showing the probability of each prediction.
 - **Responsive Dashboard**: A modern "Dark Lab" UI built with React and Vite.
 
-### Architecture
-- **Input Layer**: 784 Neurons (28x28 pixels)
-- **Hidden Layer**: 128 Neurons (ReLU activation)
-- **Output Layer**: 11 Neurons (10 Digits + "Not a Number")
+### Updated Architecture
+The network has been upgraded to a deeper 4-layer structure for improved feature extraction:
+- **Input Layer**: 784 Neurons (28x28 pixels).
+- **Hidden Layer 1**: 512 Neurons (ReLU activation).
+- **Hidden Layer 2**: 256 Neurons (ReLU activation).
+- **Hidden Layer 3**: 128 Neurons (ReLU activation).
+- **Output Layer**: 11 Neurons (10 Digits + "Not a Number" via Softmax).
 
 ---
 
@@ -39,7 +41,6 @@ Neural Vision 3D is an educational tool designed to demystify how artificial neu
 ### Frontend
 - **React + TypeScript**: Application framework.
 - **Three.js / React Three Fiber**: 3D rendering engine with optimized rendering.
-- **React Three Drei**: Helpers for 3D lines, shapes, and environment.
 - **Axios**: API communication.
 - **CSS3**: Custom "Neon-Glassmorphism" styling with animations.
 
@@ -50,16 +51,16 @@ Neural Vision 3D is an educational tool designed to demystify how artificial neu
 ```text
 neural-network-numbers/
 ├── backend/
-│   ├── brain.py        # The Neural Network class logic
+│   ├── brain.py        # The Neural Network class logic (4 layers)
 │   ├── main.py         # FastAPI server & CORS config
-│   ├── train.py        # Training script for generating weights
-│   ├── weights.npz     # Saved model weights (784x64x10)
+│   ├── train.py        # Training script (He Initialisation, 25 epochs)
+│   ├── weights.npz     # Saved model weights (784x512x256x128x11)
 │   └── requirements.txt
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── DrawingCanvas.tsx # Drawing logic & image processing
-│   │   │   └── NeuralScene.tsx   # 3D visualization logic
+│   │   │   └── NeuralScene.tsx   # 3D visualization for all 4 layers
 │   │   ├── App.tsx               # Main Dashboard layout
 │   │   └── App.css               # Modern UI styling
 │   └── .env                      # API URL configuration
