@@ -1,49 +1,52 @@
 const LAYERS = [
     {
         index: '00',
-        label: 'Input Layer',
+        label: 'Input',
         neurons: 784,
         shape: '28 × 28',
         activation: '—',
-        role: 'Each pixel of the input image maps to one neuron. Values are normalized to [0, 1].',
-        color: 'layer-input',
+        role: 'Each pixel maps to one neuron. Values normalized to [0, 1].',
     },
     {
         index: '01',
-        label: 'Hidden Layer 1',
+        label: 'Hidden 1',
         neurons: 512,
-        shape: '512 × 1',
+        shape: '512',
         activation: 'ReLU',
-        role: 'Learns low-level features — edges, curves, and stroke orientations.',
-        color: 'layer-h1',
+        role: 'Detects low-level features — edges, curves, stroke orientations.',
     },
     {
         index: '02',
-        label: 'Hidden Layer 2',
+        label: 'Hidden 2',
         neurons: 256,
-        shape: '256 × 1',
+        shape: '256',
         activation: 'ReLU',
-        role: 'Combines low-level features into higher-order patterns like loops and lines.',
-        color: 'layer-h2',
+        role: 'Combines features into patterns: loops, serifs, verticals.',
     },
     {
         index: '03',
-        label: 'Hidden Layer 3',
+        label: 'Hidden 3',
         neurons: 128,
-        shape: '128 × 1',
+        shape: '128',
         activation: 'ReLU',
-        role: 'Compresses representations into the most discriminative features per digit class.',
-        color: 'layer-h3',
+        role: 'Compresses into the most discriminative features per class.',
     },
     {
         index: '04',
-        label: 'Output Layer',
+        label: 'Output',
         neurons: 11,
-        shape: '11 × 1',
+        shape: '11',
         activation: 'Softmax',
-        role: 'Returns a probability distribution over 10 digits plus a "Not a Number" class.',
-        color: 'layer-output',
+        role: 'Probability distribution over 10 digits + "Not a Number" class.',
     },
+];
+
+const STATS = [
+    { val: '~600K', label: 'Parameters' },
+    { val: '60,000', label: 'Training samples' },
+    { val: '25', label: 'Epochs' },
+    { val: '0.003', label: 'Learning rate' },
+    { val: 'L2', label: 'Regularization' },
 ];
 
 const Architecture = () => (
@@ -51,39 +54,27 @@ const Architecture = () => (
         <div className="section-inner">
             <div className="section-header">
                 <span className="section-tag">Architecture</span>
-                <h2 className="section-title">4-Layer Deep Network</h2>
+                <h2 className="section-title">4 layers, ~600K parameters</h2>
                 <p className="section-desc">
-                    Each layer transforms the representation, progressively abstracting raw pixels
-                    into digit identity. Trained on MNIST with He initialization and L2 regularization.
+                    A fully-connected feedforward network. Each layer applies a linear transformation
+                    followed by a non-linearity, progressively abstracting pixels into digit identity.
                 </p>
             </div>
 
-            <div className="arch-flow">
+            {/* Pipeline diagram */}
+            <div className="pipeline">
                 {LAYERS.map((layer, i) => (
-                    <div key={i} className="arch-flow-item">
-                        <div className={`arch-card ${layer.color}`}>
-                            <div className="arch-card-header">
-                                <span className="arch-card-index">{layer.index}</span>
-                                <span className="arch-card-label">{layer.label}</span>
-                                <span className={`arch-card-activation ${layer.activation === '—' ? 'act-none' : ''}`}>
-                                    {layer.activation}
-                                </span>
-                            </div>
-                            <div className="arch-card-neurons">
-                                <span className="arch-big-num">{layer.neurons.toLocaleString()}</span>
-                                <span className="arch-sub">neurons</span>
-                            </div>
-                            <p className="arch-card-role">{layer.role}</p>
-                            <div className="arch-card-shape">
-                                <span className="arch-shape-label">shape</span>
-                                <code>{layer.shape}</code>
-                            </div>
+                    <div key={i} className="pipeline-item">
+                        <div className={`pipeline-node ${i === 0 ? 'node-edge' : i === LAYERS.length - 1 ? 'node-edge node-out' : 'node-hidden'}`}>
+                            <span className="pipeline-count">{layer.neurons}</span>
+                            <span className="pipeline-name">{layer.label}</span>
+                            <span className="pipeline-act">{layer.activation}</span>
                         </div>
                         {i < LAYERS.length - 1 && (
-                            <div className="arch-connector">
-                                <div className="arch-connector-line" />
-                                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                                    <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            <div className="pipeline-connector">
+                                <div className="pipeline-line" />
+                                <svg width="6" height="10" viewBox="0 0 6 10" fill="none">
+                                    <path d="M1 1L5 5L1 9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
                                 </svg>
                             </div>
                         )}
@@ -91,26 +82,42 @@ const Architecture = () => (
                 ))}
             </div>
 
-            <div className="arch-stats">
-                <div className="arch-stat">
-                    <span className="arch-stat-val">~600K</span>
-                    <span className="arch-stat-label">Parameters</span>
-                </div>
-                <div className="arch-stat-div" />
-                <div className="arch-stat">
-                    <span className="arch-stat-val">60,000</span>
-                    <span className="arch-stat-label">Training samples</span>
-                </div>
-                <div className="arch-stat-div" />
-                <div className="arch-stat">
-                    <span className="arch-stat-val">25</span>
-                    <span className="arch-stat-label">Epochs</span>
-                </div>
-                <div className="arch-stat-div" />
-                <div className="arch-stat">
-                    <span className="arch-stat-val">0.003</span>
-                    <span className="arch-stat-label">Learning rate</span>
-                </div>
+            {/* Spec table */}
+            <table className="spec-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Layer</th>
+                        <th>Neurons</th>
+                        <th>Activation</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {LAYERS.map((layer) => (
+                        <tr key={layer.index}>
+                            <td className="spec-idx">{layer.index}</td>
+                            <td className="spec-name">{layer.label}</td>
+                            <td className="spec-num">{layer.neurons.toLocaleString()}</td>
+                            <td>
+                                <code className={`spec-act ${layer.activation === 'ReLU' ? 'act-relu' : layer.activation === 'Softmax' ? 'act-softmax' : 'act-none'}`}>
+                                    {layer.activation}
+                                </code>
+                            </td>
+                            <td className="spec-role">{layer.role}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+
+            {/* Training stats */}
+            <div className="training-stats">
+                {STATS.map((s, i) => (
+                    <div key={i} className="training-stat">
+                        <span className="training-val">{s.val}</span>
+                        <span className="training-label">{s.label}</span>
+                    </div>
+                ))}
             </div>
         </div>
     </section>

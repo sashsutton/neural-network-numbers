@@ -107,10 +107,10 @@ const NeuralScene = ({ networkData }: any) => {
     );
 
     return (
-        <div style={{ height: '100%', width: '100%', background: '#0C0C0C' }}>
+        <div style={{ height: '100%', width: '100%', background: '#161616' }}>
             <Canvas camera={{ position: [20, 10, 20], fov: 45 }}>
-                <color attach="background" args={['#0C0C0C']} />
-                <fog attach="fog" args={['#0C0C0C', 15, 55]} />
+                <color attach="background" args={['#161616']} />
+                <fog attach="fog" args={['#161616', 15, 55]} />
                 <ambientLight intensity={0.6} />
                 <pointLight position={[10, 10, 10]} intensity={2.0} color="#5B8DEF" />
                 <Stars radius={100} depth={50} count={1500} factor={3} saturation={0} fade speed={0.3} />
