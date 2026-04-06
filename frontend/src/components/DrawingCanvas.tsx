@@ -115,14 +115,14 @@ const DrawingCanvas = ({ onPrediction, onClear }: any) => {
                 onMouseMove={draw}
                 onMouseUp={() => setIsDrawing(false)}
                 onMouseLeave={() => setIsDrawing(false)}
-                style={{ border: '2px solid #4facfe', borderRadius: '8px' }}
+                className="drawing-canvas"
             />
-            <div className="button-group">
-                <button onClick={handlePredict} className="predict-btn">
+            <div className="canvas-actions">
+                <button onClick={handlePredict} className="btn-primary">
                     Run Prediction
                 </button>
-                <button onClick={clearCanvas} className="clear-btn">
-                    Clear Pad
+                <button onClick={clearCanvas} className="btn-ghost">
+                    Clear
                 </button>
             </div>
         </div>
