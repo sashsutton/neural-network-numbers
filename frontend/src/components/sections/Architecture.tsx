@@ -5,7 +5,7 @@ const LAYERS = [
         neurons: 784,
         shape: '28 × 28',
         activation: '—',
-        role: 'Each pixel maps to one neuron. Values normalized to [0, 1].',
+        role: 'Each pixel maps to one neuron. Values normalised to [0, 1].',
     },
     {
         index: '01',
@@ -46,7 +46,7 @@ const STATS = [
     { val: '60,000', label: 'Training samples' },
     { val: '25', label: 'Epochs' },
     { val: '0.003', label: 'Learning rate' },
-    { val: 'L2', label: 'Regularization' },
+    { val: 'L2', label: 'Regularisation' },
 ];
 
 const Architecture = () => (

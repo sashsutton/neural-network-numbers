@@ -6,8 +6,8 @@ const STEPS = [
     },
     {
         num: '02',
-        title: 'Preprocess',
-        body: 'The drawing is cropped to its bounding box, centred, and downscaled to 28×28. Pixel values are normalized to [0, 1].',
+        title: 'Pre-process',
+        body: 'The drawing is cropped to its bounding box, centred, and downscaled to 28×28. Pixel values are normalised to [0, 1].',
     },
     {
         num: '03',
