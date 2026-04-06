@@ -5,7 +5,7 @@ const LAYERS = [
         neurons: 784,
         shape: '28 × 28',
         activation: '—',
-        role: 'Each pixel maps to one neuron. Values normalised to [0, 1].',
+        weights: '—',
     },
     {
         index: '01',
@@ -13,7 +13,7 @@ const LAYERS = [
         neurons: 512,
         shape: '512',
         activation: 'ReLU',
-        role: 'Detects low-level features — edges, curves, stroke orientations.',
+        weights: '401,408',
     },
     {
         index: '02',
@@ -21,7 +21,7 @@ const LAYERS = [
         neurons: 256,
         shape: '256',
         activation: 'ReLU',
-        role: 'Combines features into patterns: loops, serifs, verticals.',
+        weights: '131,072',
     },
     {
         index: '03',
@@ -29,7 +29,7 @@ const LAYERS = [
         neurons: 128,
         shape: '128',
         activation: 'ReLU',
-        role: 'Compresses into the most discriminative features per class.',
+        weights: '32,768',
     },
     {
         index: '04',
@@ -37,7 +37,7 @@ const LAYERS = [
         neurons: 11,
         shape: '11',
         activation: 'Softmax',
-        role: 'Probability distribution over 10 digits + "Not a Number" class.',
+        weights: '1,408',
     },
 ];
 
@@ -90,7 +90,7 @@ const Architecture = () => (
                         <th>Layer</th>
                         <th>Neurons</th>
                         <th>Activation</th>
-                        <th>Role</th>
+                        <th>Weights</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -104,7 +104,7 @@ const Architecture = () => (
                                     {layer.activation}
                                 </code>
                             </td>
-                            <td className="spec-role">{layer.role}</td>
+                            <td className="spec-role">{layer.weights}</td>
                         </tr>
                     ))}
                 </tbody>
@@ -119,6 +119,9 @@ const Architecture = () => (
                     </div>
                 ))}
             </div>
+            <p className="arch-note">
+                L2 regularisation adds a penalty proportional to the sum of squared weights to the loss function. This discourages any single weight from growing too large, which reduces overfitting and keeps the model from memorising the training data.
+            </p>
         </div>
     </section>
 );
