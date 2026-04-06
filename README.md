@@ -41,7 +41,7 @@ The goal is to make the concepts of forward passes, activation functions, and ba
 
 ## How It Works, End to End
 
-### 1. Drawing and preprocessing
+### 1. Drawing and pre-processing
 
 The drawing canvas is 280×280 pixels. When you hit "Run Prediction", the app:
 
@@ -68,7 +68,7 @@ z = (weights × previous activations) + bias
 activation = ReLU(z)      →     max(0, z)
 ```
 
-ReLU simply means "if the value is negative, set it to zero." This non-linearity is what allows the network to learn complex patterns rather than just drawing straight lines through data.
+ReLU simply means "if the value is negative, set it to zero." This non-linearity is what allows the network to learn complex patterns rather than just fitting straight lines through data.
 
 At the output layer, Softmax is used instead of ReLU:
 
@@ -110,7 +110,7 @@ The next time you draw, the network has already incorporated your correction.
 
 **Total parameters:** ~600,000 (weights + biases across all layers)
 
-The shape follows a classic **funnel pattern**: wide at the start to capture many possible features, narrowing through each layer to force the network to generalise and compress. This is not arbitrary — if the first hidden layer were too narrow, it would bottleneck feature detection before any abstraction has happened.
+The shape follows a classic **funnel pattern**: wide at the start to capture many possible features, narrowing through each layer to force the network to generalise and compress. This is not arbitrary — if the first hidden layer were too narrow, it would bottleneck feature detection before any abstraction had taken place.
 
 ---
 
@@ -122,11 +122,11 @@ The architecture was not designed upfront — it was discovered through iteratio
 
 The first version had a single hidden layer with 128 neurons. In theory, a single hidden layer with enough neurons can approximate any function (the Universal Approximation Theorem). In practice, it struggled badly.
 
-The problem is that one layer has to do everything at once: detect edges, understand their arrangement, recognise digit-level structure, and produce a classification — all in a single step. It has no ability to build up a hierarchical understanding. The result was poor accuracy, especially on digits that look similar: 3 vs 8, 4 vs 9, 1 vs 7.
+The problem is that one layer has to do everything at once: detect edges, understand their arrangement, recognise digit-level structure, and produce a classification — all in a single step. It has no capacity to build up a hierarchical understanding. The result was poor accuracy, especially on digits that look similar: 3 vs 8, 4 vs 9, 1 vs 7.
 
 **Version 2 — Two hidden layers: `784 → 256 → 128 → 11`**
 
-Adding a second hidden layer introduced one stage of abstraction between raw pixels and classification. The first layer could learn edge-like filters; the second could begin combining them. Accuracy improved noticeably. But the network still made avoidable mistakes on messy or ambiguous handwriting — the kind of thing a human would get right without thinking.
+Adding a second hidden layer introduced one stage of abstraction between raw pixels and classification. The first layer could learn edge-like filters; the second could begin combining them. Accuracy improved noticeably, but the network still made avoidable mistakes on messy or ambiguous handwriting — the kind of thing a human would get right without thinking.
 
 **Version 3 — Three hidden layers: `784 → 512 → 256 → 128 → 11`** *(current)*
 
@@ -146,11 +146,11 @@ For a **fully-connected** (dense) network on 28×28 inputs, three hidden layers 
 
 The improvements that would meaningfully raise performance from here are not architectural — they are **regularisation** techniques:
 
-| Technique | What it does | Expected gain |
-|-----------|-------------|---------------|
+| Technique | What it does | Expected benefit |
+|-----------|-------------|-----------------|
 | **Dropout** (p=0.3–0.5) | Randomly disables neurons during training, forcing redundancy and preventing over-reliance on any one path | Reduces overfitting on ambiguous samples |
 | **Batch Normalisation** | Normalises layer inputs during training to keep activations in a healthy range | Stabilises training, allows a higher learning rate |
-| **Learning rate scheduling** | Reduces the learning rate gradually over epochs rather than holding it constant | Better convergence at the end of training |
+| **Learning rate scheduling** | Reduces the learning rate gradually over epochs rather than holding it constant | Better convergence towards the end of training |
 
 These are potential future improvements. The current architecture is intentionally kept simple for readability and educational value.
 
@@ -160,9 +160,9 @@ These are potential future improvements. The current architecture is intentional
 
 The 11th output neuron handles inputs that are not digits — blank canvases, random scribbles, non-digit shapes. It is trained on synthetic data: 10,000 samples of low-intensity random noise, and 10,000 inverted MNIST images.
 
-Importantly, this class does **not** benefit from additional network depth. Adding a fifth layer would increase capacity for the whole network, but NaN detection is not a capacity problem — it is a **training data problem**. The network can only classify something as "not a digit" if it has seen similar-looking non-digit inputs during training.
+Importantly, this class does **not** benefit from additional network depth. Adding a fifth layer would increase capacity across the whole network, but NaN detection is not a capacity problem — it is a **training data problem**. The network can only classify something as "not a digit" if it has encountered similar-looking non-digit inputs during training.
 
-A more robust approach for future iterations would be a **confidence threshold**: if the highest Softmax output is below some threshold (say, 0.6), output "Not a Number" — regardless of which neuron technically won. This would catch ambiguous inputs that the network has never seen, rather than confidently misclassifying them as the closest-looking digit.
+A more robust approach for future iterations would be a **confidence threshold**: if the highest Softmax output falls below some threshold (say, 0.6), output "Not a Number" — regardless of which neuron technically won. This would catch ambiguous inputs the network has never seen, rather than confidently misclassifying them as the closest-looking digit.
 
 ---
 
@@ -172,7 +172,7 @@ Training is handled by `backend/train.py` and only needs to be run once to gener
 
 ### Dataset
 
-- **MNIST digits:** 60,000 training images of handwritten digits (0–9), each 28×28 grayscale pixels
+- **MNIST digits:** 60,000 training images of handwritten digits (0–9), each 28×28 greyscale pixels
 - **Synthetic NaN samples:** 10,000 low-intensity random noise images + 10,000 inverted MNIST images, all labelled as class 10 ("Not a Number")
 - **Total training samples:** 80,000
 
@@ -183,12 +183,12 @@ Training is handled by `backend/train.py` and only needs to be run once to gener
 | Epochs | 25 | Sufficient for convergence on this dataset size without overfitting |
 | Batch size | 32 | Small enough to keep gradient updates noisy (regularising effect), large enough to be efficient |
 | Learning rate | 0.003 | Slightly conservative for a 4-layer network — prevents oscillation in deeper layers |
-| L2 regularisation | λ = 0.001 | Adds a small penalty for large weights, discouraging over-reliance on single features |
+| L2 regularisation | λ = 0.001 | Adds a small penalty for large weights, discouraging over-reliance on individual features |
 | Weight initialisation | He initialisation | Designed specifically for ReLU networks. Initialises weights scaled by `sqrt(2 / fan_in)` to prevent vanishing or exploding activations at the start of training |
 
 ### What He initialisation does
 
-Standard random initialisation often causes training to stall in deep networks. If weights start too small, activations shrink to near-zero by the time they reach the later layers (vanishing gradients). If they start too large, activations explode. He initialisation sets the starting scale specifically for ReLU, keeping variance consistent layer to layer:
+Standard random initialisation often causes training to stall in deep networks. If weights start too small, activations shrink to near-zero by the time they reach the later layers (vanishing gradients). If they start too large, activations explode. He initialisation sets the starting scale specifically for ReLU networks, keeping variance consistent layer to layer:
 
 ```python
 W = np.random.randn(layer_out, layer_in) * np.sqrt(2.0 / layer_in)
@@ -208,7 +208,7 @@ For each hidden layer (working backwards):
 dL/dz = (W_next^T · dL/dz_next) * ReLU'(z)
 ```
 
-Where `ReLU'(z) = 1 if z > 0, else 0`. Weights and biases are updated with gradient descent:
+Where `ReLU'(z) = 1 if z > 0, else 0`. Weights and biases are then updated via gradient descent:
 
 ```
 W -= learning_rate * (dL/dW + λ * W)
@@ -230,36 +230,36 @@ Runs a forward pass and returns all layer activations plus the prediction.
 **Request body:**
 ```json
 {
-  "pixels": [0.0, 0.12, 0.95, ...]
+  "pixels": [0.0, 0.12, 0.95, "..."]
 }
 ```
-`pixels` is a flat array of 784 floats in [0, 1].
+`pixels` is a flat array of 784 floats in the range [0, 1].
 
 **Response:**
 ```json
 {
-  "input_layer":   [...],
-  "hidden_layer1": [...],
-  "hidden_layer2": [...],
-  "hidden_layer3": [...],
-  "output_layer":  [...],
+  "input_layer":   ["..."],
+  "hidden_layer1": ["..."],
+  "hidden_layer2": ["..."],
+  "hidden_layer3": ["..."],
+  "output_layer":  ["..."],
   "prediction":    "7",
   "confidence":    0.9823
 }
 ```
-`prediction` is a string — either a digit `"0"`–`"9"` or `"Not a Number"`.
-`confidence` is the Softmax probability of the winning class (0.0–1.0).
+`prediction` is a string — either a digit `"0"`–`"9"` or `"Not a Number"`.  
+`confidence` is the Softmax probability of the winning class, between 0.0 and 1.0.
 
 ---
 
 ### `POST /feedback`
 
-Accepts a correction, runs backpropagation, and saves updated weights.
+Accepts a correction, runs backpropagation, and saves the updated weights.
 
 **Request body:**
 ```json
 {
-  "pixels":        [0.0, 0.12, 0.95, ...],
+  "pixels":        [0.0, 0.12, 0.95, "..."],
   "correct_label": 7
 }
 ```
@@ -287,7 +287,7 @@ Accepts a correction, runs backpropagation, and saves updated weights.
 | TensorFlow | 2.15 | Used **only** during training to download the MNIST dataset |
 | Pydantic | 2.5 | Request validation |
 
-TensorFlow is listed as a dependency only because it provides a convenient MNIST loader. It plays no role in inference — the forward pass and backpropagation are implemented entirely in NumPy.
+TensorFlow is listed as a dependency solely because it provides a convenient MNIST loader. It plays no role in inference — the forward pass and backpropagation are implemented entirely in NumPy.
 
 ### Frontend
 
@@ -310,8 +310,8 @@ neural-network-numbers/
 ├── backend/
 │   ├── brain.py            # NeuralNetwork class — forward pass and backpropagation
 │   ├── main.py             # FastAPI app — /predict and /feedback endpoints
-│   ├── train.py            # Training script — runs once to produce weights.npz
-│   ├── weights.npz         # Pre-trained model weights (included, ~4.5MB)
+│   ├── train.py            # Training script — run once to produce weights.npz
+│   ├── weights.npz         # Pre-trained model weights (included, ~4.5 MB)
 │   └── requirements.txt    # Python dependencies
 │
 └── frontend/
@@ -325,7 +325,7 @@ neural-network-numbers/
         ├── main.tsx                        # React entry point
         └── components/
             ├── Nav.tsx                     # Sticky navigation bar
-            ├── DrawingCanvas.tsx           # Canvas drawing + image preprocessing
+            ├── DrawingCanvas.tsx           # Canvas drawing + image pre-processing
             ├── NeuralScene.tsx             # Three.js 3D activation visualiser
             └── sections/
                 ├── Hero.tsx                # Landing section with architecture diagram
@@ -336,9 +336,9 @@ neural-network-numbers/
 
 ### Key files explained
 
-**`backend/brain.py`** — The neural network class. Loads weights from `weights.npz`, exposes a `forward_pass` method that returns all layer activations, and handles the online learning feedback in `main.py`.
+**`backend/brain.py`** — The neural network class. Loads weights from `weights.npz`, exposes a `forward_pass` method that returns all layer activations, and handles the online learning feedback called from `main.py`.
 
-**`backend/train.py`** — Standalone training script. Downloads MNIST, generates NaN samples, initialises weights with He initialisation, and runs batch SGD with backpropagation for 25 epochs. Only needs to be run if you want to retrain from scratch.
+**`backend/train.py`** — Standalone training script. Downloads MNIST, generates NaN samples, initialises weights with He initialisation, and runs batch SGD with backpropagation for 25 epochs. Only needs to be run if you want to retrain the model from scratch.
 
 **`frontend/src/components/DrawingCanvas.tsx`** — Manages the 280×280 drawing canvas. When a prediction is requested, it finds the bounding box of the drawing, crops, centres, scales to 28×28, normalises pixel values, and sends the flattened array to the backend.
 
@@ -348,7 +348,7 @@ neural-network-numbers/
 
 ## Running Locally
 
-You need two terminals — one for the backend, one for the frontend.
+You will need two terminals — one for the backend, one for the frontend.
 
 ### Prerequisites
 
@@ -383,13 +383,13 @@ pip install -r requirements.txt
 uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
-The API will be running at `http://localhost:8000`. You can visit `http://localhost:8000/docs` for the auto-generated Swagger UI.
+The API will be available at `http://localhost:8000`. You can visit `http://localhost:8000/docs` for the auto-generated Swagger UI.
 
-**If `weights.npz` is missing** (e.g. after a fresh clone where the file wasn't committed), retrain the model:
+**If `weights.npz` is missing** (e.g. after a fresh clone where the file was not committed), retrain the model:
 
 ```bash
 python train.py
-# Takes ~5–10 minutes depending on hardware
+# Takes approximately 5–10 minutes depending on hardware
 ```
 
 ---
@@ -419,14 +419,14 @@ Open `http://localhost:5173` in your browser.
 
 ---
 
-### Both running — how to use it
+### How to use it
 
 1. Draw a digit (0–9) on the black canvas using your mouse
 2. Click **Run Prediction**
 3. Watch the 3D network light up — drag to rotate, scroll to zoom
-4. The prediction and confidence score appear on the left panel
-5. If the network is wrong, click **Wrong? Correct it**, select the real digit, and the network updates immediately
-6. Clear the canvas and draw again to test the updated weights
+4. The prediction and confidence score appear in the left panel
+5. If the network is wrong, click **Wrong? Correct it**, select the correct digit, and the network updates immediately
+6. Clear the canvas and draw again to see the effect of the updated weights
 
 ---
 
@@ -434,13 +434,13 @@ Open `http://localhost:5173` in your browser.
 
 The project is deployed as two separate services:
 
-- **Frontend** → [Vercel](https://vercel.com) — deployed from the `frontend/` directory. Set `VITE_API_URL` as an environment variable in the Vercel project settings pointing to your backend URL.
+- **Frontend** → [Vercel](https://vercel.com) — deployed from the `frontend/` directory. Set `VITE_API_URL` as an environment variable in the Vercel project settings, pointing to your backend URL.
 
 - **Backend** → [Render](https://render.com) (or any platform that supports Python). The start command is:
   ```bash
   uvicorn main:app --host 0.0.0.0 --port 8000
   ```
-  Make sure `weights.npz` is committed to the repository — the model loads from this file on startup.
+  Ensure `weights.npz` is committed to the repository — the model loads from this file on startup.
 
 ---
 
