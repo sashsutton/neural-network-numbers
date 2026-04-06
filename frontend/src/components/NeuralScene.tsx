@@ -32,10 +32,10 @@ const ConnectionLines = ({ fromPos, toPos, activations, targetActivations }: any
                         <Line
                             key={`line-${i}-${target.index}`}
                             points={[new THREE.Vector3(...start), new THREE.Vector3(...end)]}
-                            color="#4facfe"
+                            color="#5B8DEF"
                             lineWidth={0.3}
                             transparent
-                            opacity={activations[i] * 0.15}
+                            opacity={activations[i] * 0.12}
                         />
                     );
                 });
@@ -107,13 +107,13 @@ const NeuralScene = ({ networkData }: any) => {
     );
 
     return (
-        <div style={{ height: '100%', width: '100%', background: '#1e1e2e' }}>
+        <div style={{ height: '100%', width: '100%', background: '#0C0C0C' }}>
             <Canvas camera={{ position: [20, 10, 20], fov: 45 }}>
-                <color attach="background" args={['#1e1e2e']} />
-                <fog attach="fog" args={['#1e1e2e', 15, 50]} />
-                <ambientLight intensity={0.8} />
-                <pointLight position={[10, 10, 10]} intensity={2.5} color="#4facfe" />
-                <Stars radius={100} depth={50} count={2000} factor={4} saturation={0} fade speed={0.5} />
+                <color attach="background" args={['#0C0C0C']} />
+                <fog attach="fog" args={['#0C0C0C', 15, 55]} />
+                <ambientLight intensity={0.6} />
+                <pointLight position={[10, 10, 10]} intensity={2.0} color="#5B8DEF" />
+                <Stars radius={100} depth={50} count={1500} factor={3} saturation={0} fade speed={0.3} />
 
                 {/* Input Layer */}
                 {networkData && inputPositions.map((pos: any, i: number) => (
@@ -124,22 +124,22 @@ const NeuralScene = ({ networkData }: any) => {
 
                 {/* Hidden 1 (512) */}
                 {hidden1Positions.map((pos: any, i: number) => (
-                    <Neuron key={`h1-${i}`} position={pos} activation={networkData?.hidden_layer1?.[i] || 0} color="#00ffff" />
+                    <Neuron key={`h1-${i}`} position={pos} activation={networkData?.hidden_layer1?.[i] || 0} color="#00CFCF" />
                 ))}
 
                 {/* Hidden 2 (256) */}
                 {hidden2Positions.map((pos: any, i: number) => (
-                    <Neuron key={`h2-${i}`} position={pos} activation={networkData?.hidden_layer2?.[i] || 0} color="#0088ff" />
+                    <Neuron key={`h2-${i}`} position={pos} activation={networkData?.hidden_layer2?.[i] || 0} color="#3B82F6" />
                 ))}
 
                 {/* Hidden 3 (128) */}
                 {hidden3Positions.map((pos: any, i: number) => (
-                    <Neuron key={`h3-${i}`} position={pos} activation={networkData?.hidden_layer3?.[i] || 0} color="#4facfe" />
+                    <Neuron key={`h3-${i}`} position={pos} activation={networkData?.hidden_layer3?.[i] || 0} color="#5B8DEF" />
                 ))}
 
                 {/* Output (11) */}
                 {outputPositions.map((pos: any, i: number) => (
-                    <Neuron key={`o-${i}`} position={pos} activation={networkData?.output_layer?.[i] || 0} color={i === 10 ? "#ff4444" : "#ff00ff"} />
+                    <Neuron key={`o-${i}`} position={pos} activation={networkData?.output_layer?.[i] || 0} color={i === 10 ? "#E05252" : "#A855F7"} />
                 ))}
 
                 {/* Connections */}
@@ -152,6 +152,7 @@ const NeuralScene = ({ networkData }: any) => {
                 {networkData?.hidden_layer3 && networkData?.output_layer && (
                     <ConnectionLines fromPos={hidden3Positions} toPos={outputPositions} activations={networkData.hidden_layer3} targetActivations={networkData.output_layer} />
                 )}
+                {/* Label overlay */}
 
                 <OrbitControls />
             </Canvas>
