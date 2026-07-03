@@ -9,14 +9,14 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
-# ── Rate limiter ──────────────────────────────────────────────────────────────
+# Rate limiter
 limiter = Limiter(key_func=get_remote_address)
 
 app = FastAPI()
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# ── CORS ──────────────────────────────────────────────────────────────────────
+# CORS
 # In production, restrict to your Vercel URL via the ALLOWED_ORIGIN env variable.
 # Locally, both localhost ports are allowed by default.
 ALLOWED_ORIGINS = [
@@ -35,11 +35,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Model ─────────────────────────────────────────────────────────────────────
+# Model
 brain = NeuralNetwork()
 brain.load_weights("weights.npz")
 
-# ── Request schemas ───────────────────────────────────────────────────────────
+# Request schemas
 
 class DigitData(BaseModel):
     pixels: List[float]
@@ -75,7 +75,7 @@ class FeedbackData(BaseModel):
         return v
 
 
-# ── Endpoints ─────────────────────────────────────────────────────────────────
+# Endpoints
 
 @app.get("/")
 def read_root():
