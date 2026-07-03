@@ -1,26 +1,23 @@
-import Nav from './components/Nav';
-import Hero from './components/sections/Hero';
-import Architecture from './components/sections/Architecture';
-import HowItWorks from './components/sections/HowItWorks';
-import Playground from './components/sections/Playground';
+import Masthead from './components/Masthead';
+import Playground from './components/Playground';
+import Notes from './components/Notes';
 import './App.css';
 
 function App() {
     return (
-        <div className="app">
-            <Nav />
+        <div className="page">
+            <Masthead />
             <main>
-                <Hero />
-                <Architecture />
-                <HowItWorks />
                 <Playground />
+                <Notes />
             </main>
-            <footer className="footer">
-                <div className="footer-inner">
-                    <span>Neural Network · MNIST · 784→512→256→128→11</span>
-                    <span className="footer-sep">·</span>
-                    <span>Built with React, FastAPI, Three.js</span>
-                </div>
+            <footer className="colophon">
+                <span>Sasha Sutton, 2026</span>
+                <a href="https://github.com/sashsutton/neural-network-numbers" target="_blank" rel="noreferrer">
+                    source
+                </a>
+                <span>MIT licence</span>
+                <span>react &middot; three.js &middot; fastapi &middot; numpy</span>
             </footer>
         </div>
     );

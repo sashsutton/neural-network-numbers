@@ -118,11 +118,11 @@ const DrawingCanvas = ({ onPrediction, onClear }: any) => {
                 className="drawing-canvas"
             />
             <div className="canvas-actions">
-                <button onClick={handlePredict} className="btn-primary">
-                    Run Prediction
+                <button onClick={handlePredict} className="btn btn-ink">
+                    read it
                 </button>
-                <button onClick={clearCanvas} className="btn-ghost">
-                    Clear
+                <button onClick={clearCanvas} className="btn">
+                    wipe
                 </button>
             </div>
         </div>
