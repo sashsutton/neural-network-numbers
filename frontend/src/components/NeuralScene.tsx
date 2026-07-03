@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Line, Sphere, Stars } from '@react-three/drei';
+import { OrbitControls, Line, Sphere } from '@react-three/drei';
 import * as THREE from 'three';
 
 const Neuron = ({ position, activation, color = "#00ffff" }: any) => (
@@ -8,7 +8,7 @@ const Neuron = ({ position, activation, color = "#00ffff" }: any) => (
         <meshStandardMaterial
             emissive={color}
             emissiveIntensity={activation * 6}
-            color={activation > 0.1 ? color : "#2a2a2a"}
+            color={activation > 0.1 ? color : "#2b261d"}
             toneMapped={false}
         />
     </Sphere>
@@ -32,7 +32,7 @@ const ConnectionLines = ({ fromPos, toPos, activations, targetActivations }: any
                         <Line
                             key={`line-${i}-${target.index}`}
                             points={[new THREE.Vector3(...start), new THREE.Vector3(...end)]}
-                            color="#5B8DEF"
+                            color="#f0973a"
                             lineWidth={0.3}
                             transparent
                             opacity={activations[i] * 0.12}
@@ -107,39 +107,38 @@ const NeuralScene = ({ networkData }: any) => {
     );
 
     return (
-        <div style={{ height: '100%', width: '100%', background: '#161616' }}>
+        <div style={{ height: '100%', width: '100%', background: '#16130e' }}>
             <Canvas camera={{ position: [20, 10, 20], fov: 45 }}>
-                <color attach="background" args={['#161616']} />
-                <fog attach="fog" args={['#161616', 15, 55]} />
+                <color attach="background" args={['#16130e']} />
+                <fog attach="fog" args={['#16130e', 15, 55]} />
                 <ambientLight intensity={0.6} />
-                <pointLight position={[10, 10, 10]} intensity={2.0} color="#5B8DEF" />
-                <Stars radius={100} depth={50} count={1500} factor={3} saturation={0} fade speed={0.3} />
+                <pointLight position={[10, 10, 10]} intensity={2.0} color="#f0973a" />
 
                 {/* Input Layer */}
                 {networkData && inputPositions.map((pos: any, i: number) => (
                     networkData.input_layer[i] > 0.1 && (
-                        <Neuron key={`in-${i}`} position={pos} activation={networkData.input_layer[i]} color="white" />
+                        <Neuron key={`in-${i}`} position={pos} activation={networkData.input_layer[i]} color="#e8e1cd" />
                     )
                 ))}
 
                 {/* Hidden 1 (512) */}
                 {hidden1Positions.map((pos: any, i: number) => (
-                    <Neuron key={`h1-${i}`} position={pos} activation={networkData?.hidden_layer1?.[i] || 0} color="#00CFCF" />
+                    <Neuron key={`h1-${i}`} position={pos} activation={networkData?.hidden_layer1?.[i] || 0} color="#ffc46b" />
                 ))}
 
                 {/* Hidden 2 (256) */}
                 {hidden2Positions.map((pos: any, i: number) => (
-                    <Neuron key={`h2-${i}`} position={pos} activation={networkData?.hidden_layer2?.[i] || 0} color="#3B82F6" />
+                    <Neuron key={`h2-${i}`} position={pos} activation={networkData?.hidden_layer2?.[i] || 0} color="#f0973a" />
                 ))}
 
                 {/* Hidden 3 (128) */}
                 {hidden3Positions.map((pos: any, i: number) => (
-                    <Neuron key={`h3-${i}`} position={pos} activation={networkData?.hidden_layer3?.[i] || 0} color="#5B8DEF" />
+                    <Neuron key={`h3-${i}`} position={pos} activation={networkData?.hidden_layer3?.[i] || 0} color="#d97728" />
                 ))}
 
                 {/* Output (11) */}
                 {outputPositions.map((pos: any, i: number) => (
-                    <Neuron key={`o-${i}`} position={pos} activation={networkData?.output_layer?.[i] || 0} color={i === 10 ? "#E05252" : "#A855F7"} />
+                    <Neuron key={`o-${i}`} position={pos} activation={networkData?.output_layer?.[i] || 0} color={i === 10 ? "#e8e1cd" : "#ff6a3d"} />
                 ))}
 
                 {/* Connections */}
