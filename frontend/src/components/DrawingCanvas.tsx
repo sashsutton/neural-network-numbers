@@ -21,14 +21,24 @@ const DrawingCanvas = ({ onPrediction, onClear }: any) => {
         }
     };
 
+    const getPos = (e: any) => {
+        const canvas = canvasRef.current!;
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: (e.clientX - rect.left) * (canvas.width / rect.width),
+            y: (e.clientY - rect.top) * (canvas.height / rect.height),
+        };
+    };
+
     const startDrawing = (e: any) => {
         const ctx = canvasRef.current?.getContext('2d');
         if (ctx) {
+            const { x, y } = getPos(e);
             ctx.lineWidth = 18;
             ctx.lineCap = 'round';
             ctx.strokeStyle = 'white';
             ctx.beginPath();
-            ctx.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+            ctx.moveTo(x, y);
             setIsDrawing(true);
         }
     };
@@ -37,7 +47,8 @@ const DrawingCanvas = ({ onPrediction, onClear }: any) => {
         if (!isDrawing) return;
         const ctx = canvasRef.current?.getContext('2d');
         if (ctx) {
-            ctx.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+            const { x, y } = getPos(e);
+            ctx.lineTo(x, y);
             ctx.stroke();
         }
     };
